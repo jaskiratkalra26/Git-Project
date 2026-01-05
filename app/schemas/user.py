@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import BaseModel, ConfigDict
 
 class UserBase(BaseModel):
     github_username: str
@@ -11,8 +11,7 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     
-    class Config:
-        from_attributes = True
+    model_config = ConfigDict(from_attributes=True)
 
 class UserResponse(BaseModel):
     user_id: int

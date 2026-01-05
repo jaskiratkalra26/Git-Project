@@ -1,1 +1,16 @@
-.venv
+# Secrets
+.env
+
+# Dependencies
+.venv/
+
+# Database
+app.db
+test.db
+
+# Python Cache
+__pycache__/
+*.pyc
+
+# Test Cache (but keep test code in tests/ folder)
+.pytest_cache/
