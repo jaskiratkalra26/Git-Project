@@ -1,5 +1,11 @@
 from fastapi import FastAPI
 from app.api.routes import auth, repos, projects
+from app.db.database import engine
+from app.models import user  # Import models to register them with Base
+from app.db.base import Base
+
+# Create database tables
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
 
