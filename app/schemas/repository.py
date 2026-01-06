@@ -18,6 +18,9 @@ class RepositoryCreate(RepositoryBase):
 
 class RepositoryResponse(RepositoryBase):
     id: int
+    github_repo_id: int
+    owner_name: str
+    connected_by_user_id: int
     created_at: datetime
 
     class Config:
