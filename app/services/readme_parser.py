@@ -48,8 +48,8 @@ INSTRUCTIONS:
 
         try:
             async with httpx.AsyncClient() as client:
-                # Increased timeout to 120s purely for safety during model loading
-                response = await client.post(self.ollama_url, json=payload, timeout=120.0)
+                # Increased timeout to 300s (5 min) to handle slow local inference
+                response = await client.post(self.ollama_url, json=payload, timeout=300.0)
                 
                 if response.status_code != 200:
                     print(f"Ollama Error: {response.status_code} - {response.text}")
