@@ -1,10 +1,10 @@
 import httpx
 import base64
 from fastapi import HTTPException, status
-
-GITHUB_API_URL = "https://api.github.com"
+from app.core.config import GITHUB_API_URL
 
 async def verify_access_token(access_token: str):
+
     headers = {
         "Authorization": f"Bearer {access_token}",
         "Accept": "application/vnd.github.v3+json"

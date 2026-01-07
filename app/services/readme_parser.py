@@ -2,14 +2,18 @@ import json
 import re
 import httpx
 from typing import Dict, Any, List
+from app.core.config import OLLAMA_API_URL, OLLAMA_MODEL, OLLAMA_TIMEOUT
 
 class ReadmeParser:
     def __init__(self):
         # We assume Ollama is running locally on port 11434
-        self.ollama_url = "http://localhost:11434/api/generate"
-        self.model_name = "llama3.2:latest"
+        self.ollama_url = OLLAMA_API_URL
+        self.model_name = OLLAMA_MODEL
+        self.timeout = OLLAMA_TIMEOUT
 
     async def parse_readme(self, readme_text: str) -> Dict[str, Any]:
+
+
         # Default fallback
         default_result = {
             "project_name": "",
@@ -48,10 +52,11 @@ INSTRUCTIONS:
 
         try:
             async with httpx.AsyncClient() as client:
-                # Increased timeout to 300s (5 min) to handle slow local inference
-                response = await client.post(self.ollama_url, json=payload, timeout=300.0)
+                # Increased timeout to handle slow local inference
+                response = await client.post(self.ollama_url, json=payload, timeout=self.timeout)
                 
                 if response.status_code != 200:
+
                     print(f"Ollama Error: {response.status_code} - {response.text}")
                     return default_result
                 

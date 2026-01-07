@@ -1,9 +1,14 @@
 import streamlit as st
 import httpx
 import json
+import os
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configuration
-API_BASE_URL = "http://127.0.0.1:8000"
+API_BASE_URL = os.getenv("API_BASE_URL", "http://127.0.0.1:8000")
 
 st.set_page_config(
     page_title="Multimodal RAG Generator", 
