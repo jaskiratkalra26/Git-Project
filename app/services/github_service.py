@@ -1,4 +1,5 @@
 import httpx
+import base64
 from fastapi import HTTPException, status
 
 GITHUB_API_URL = "https://api.github.com"
@@ -93,4 +94,40 @@ async def get_repository_details(access_token: str, github_repo_id: int):
             "default_branch": repo_data.get("default_branch"),
             "owner_name": repo_data.get("owner", {}).get("login")
         }
+
+async def get_readme_content(access_token: str, full_name: str) -> str:
+    headers = {
+        "Authorization": f"Bearer {access_token}",
+        "Accept": "application/vnd.github.v3+json"
+    }
+    
+    async with httpx.AsyncClient() as client:
+        # GET /repos/{owner}/{repo}/readme
+        response = await client.get(
+            f"{GITHUB_API_URL}/repos/{full_name}/readme", 
+            headers=headers
+        )
+        
+        if response.status_code == 404:
+            return ""  # README not found, return empty string
+            
+        if response.status_code != 200:
+            raise HTTPException(
+                status_code=response.status_code,
+                detail="Failed to fetch README from GitHub"
+            )
+            
+        data = response.json()
+        content_b64 = data.get("content", "")
+        
+        if not content_b64:
+            return ""
+            
+        # Decode Base64 to UTF-8 string
+        try:
+            return base64.b64decode(content_b64).decode("utf-8")
+        except Exception:
+            # Fallback or error if decoding fails (though it shouldn't for valid Base64)
+            return ""
+
 
