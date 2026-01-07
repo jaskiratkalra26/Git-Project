@@ -48,7 +48,8 @@ INSTRUCTIONS:
 
         try:
             async with httpx.AsyncClient() as client:
-                response = await client.post(self.ollama_url, json=payload, timeout=60.0)
+                # Increased timeout to 120s purely for safety during model loading
+                response = await client.post(self.ollama_url, json=payload, timeout=120.0)
                 
                 if response.status_code != 200:
                     print(f"Ollama Error: {response.status_code} - {response.text}")
@@ -57,10 +58,14 @@ INSTRUCTIONS:
                 result_data = response.json()
                 generated_text = result_data.get("response", "")
                 
+                # Debug print
+                print(f"DEBUG: Ollama Raw Output: {generated_text[:100]}...")
+
                 return self._extract_json(generated_text)
 
         except Exception as e:
-            print(f"Error during Ollama parsing: {e}")
+            # Print full detailed error
+            print(f"Error during Ollama parsing: {type(e).__name__} - {str(e)}")
             return default_result
 
     def _extract_json(self, text: str) -> Dict[str, Any]:
