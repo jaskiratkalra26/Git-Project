@@ -1,3 +1,11 @@
+"""
+Streamlit Frontend Application
+
+This module runs the user interface for the GitHub Project Generator. 
+It communicates with the backend API to handle authentication, 
+repository listing, connection, and project generation.
+"""
+
 import streamlit as st
 import httpx
 import json
@@ -19,6 +27,7 @@ st.set_page_config(
 st.title("🤖 AI Project Generator from GitHub")
 
 # --- Session State Management ---
+# Initialize session state variables to persist data across re-runs
 if "access_token" not in st.session_state:
     st.session_state.access_token = None
 if "user_info" not in st.session_state:
@@ -104,6 +113,7 @@ if st.session_state.access_token:
                 
                 try:
                     with st.spinner("Connecting to Database..."):
+                        # Send connect request to backend
                         conn_res = httpx.post(f"{API_BASE_URL}/repos/connect", headers=headers, json=payload)
                         
                         if conn_res.status_code == 200:
@@ -169,10 +179,11 @@ if st.session_state.access_token:
                 st.error(f"Error: {e}")
 
 else:
-    # Landing Page State
+    # Landing Page State (Not logged in)
     st.info("👈 Please enter your GitHub Token in the sidebar to begin.")
     st.markdown("### Features")
     col1, col2, col3 = st.columns(3)
     col1.metric("Secure", "Token Auth")
     col2.metric("Smart", "Llama 3.2 Inside")
     col3.metric("Fast", "Direct GitHub Sync")
+

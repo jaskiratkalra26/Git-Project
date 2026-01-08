@@ -1,3 +1,10 @@
+"""
+API Dependencies
+
+This module defines FastAPI dependencies, particularly for authentication and
+database session injection.
+"""
+
 from fastapi import Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -10,11 +17,24 @@ security = HTTPBearer()
 async def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
-):
+) -> User:
+    """
+    Dependency that authenticates the user via GitHub token.
+
+    Args:
+        credentials (HTTPAuthorizationCredentials): The bearer token.
+        db (Session): The database session.
+
+    Returns:
+        User: The authenticated user model instance.
+
+    Raises:
+        HTTPException: If the token is invalid or the user does not exist in the local DB.
+    """
     token = credentials.credentials
     
     try:
-        # Verify token with GitHub
+        # Verify token with GitHub to ensure it is still valid
         github_user = await verify_access_token(token)
         github_id = github_user.get("id")
         
@@ -43,3 +63,4 @@ async def get_current_user(
 
 # Re-export get_db for use in other modules
 __all__ = ["get_db", "get_current_user"]
+

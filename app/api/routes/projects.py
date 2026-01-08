@@ -1,3 +1,10 @@
+"""
+Project Routes
+
+This module handles project generation and management endpoints.
+It orchestrates the flow from repository selection to README parsing and project creation.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.database import get_db
@@ -19,6 +26,27 @@ async def generate_project_from_readme(
 ):
     """
     Generate a project by parsing the README of a connected repository.
+
+    This endpoint orchestrates:
+    1. Verifying repository ownership/connection.
+    2. Fetching the README content from GitHub.
+    3. Parsing the README using an LLM to extract project details.
+    4. Saving the generated Project entry to the database.
+
+    Args:
+        repository_id (int): The internal ID of the connected repository.
+        current_user (User): The authenticated user.
+        db (Session): Database session.
+
+    Returns:
+        ProjectResponse: The created project details.
+
+    Raises:
+        HTTPException: 
+            - 404: Repository not found.
+            - 400: User missing GitHub token.
+            - 502: GitHub API error.
+            - 500: LLM parsing error.
     """
     # 1. Fetch Repository
     repo = db.query(Repository).filter(

@@ -1,3 +1,10 @@
+"""
+Authentication Routes
+
+This module handles authentication-related endpoints, specifically verifying
+tokens for GitHub login.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
@@ -14,6 +21,20 @@ async def verify_token(
     credentials: HTTPAuthorizationCredentials = Depends(security),
     db: Session = Depends(get_db)
 ):
+    """
+    Verifies a GitHub access token and authenticates the user.
+    Creates a new user or updates an existing one based on the token.
+
+    Args:
+        credentials (HTTPAuthorizationCredentials): The Bearer token from the Auth header.
+        db (Session): Database session.
+
+    Returns:
+        UserResponse: The authenticated user's ID and username.
+
+    Raises:
+        HTTPException: If token is invalid or required user data is missing.
+    """
     token = credentials.credentials
     
     # Verify token with GitHub
@@ -52,3 +73,4 @@ async def verify_token(
     db.refresh(user)
     
     return UserResponse(user_id=user.id, github_username=user.github_username)
+

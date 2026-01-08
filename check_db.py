@@ -1,8 +1,18 @@
+"""
+Database Verification Script
+
+This script helps verify the content of the local database by printing the most
+recently created project. Useful for debugging without a GUI.
+"""
+
 from app.db.database import SessionLocal
 from app.models.project import Project
 import json
 
 def check_latest_project():
+    """
+    Queries and prints details of the most recently created project.
+    """
     db = SessionLocal()
     try:
         # Get the most recent project

@@ -1,3 +1,10 @@
+"""
+Repository Routes
+
+This module handles repository-related endpoints, including listing user repositories
+from GitHub and connecting them to the local application.
+"""
+
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List, Dict, Any
@@ -17,6 +24,12 @@ async def list_user_repositories(
 ):
     """
     Fetch repositories for the authenticated user from GitHub.
+
+    Args:
+        current_user (User): The authenticated user.
+
+    Returns:
+        List[Dict[str, Any]]: A list of repositories from GitHub.
     """
     if not current_user.github_access_token:
          raise HTTPException(
@@ -43,6 +56,14 @@ async def connect_repository(
     """
     Connect a GitHub repository to the user's account by ID.
     Fetches the latest metadata from GitHub and stores it in the database.
+
+    Args:
+        repo_in (RepositoryConnect): The payload containing the GitHub repository ID.
+        current_user (User): The authenticated user.
+        db (Session): Database session.
+
+    Returns:
+        RepositoryResponse: The connected repository details.
     """
     if not current_user.github_access_token:
          raise HTTPException(
