@@ -13,9 +13,6 @@ load_dotenv()
 # Database Connection
 DATABASE_URL = os.getenv("DATABASE_URL")
 
-# Security
-SECRET_KEY = os.getenv("SECRET_KEY")
-
 # Legacy/Unused Model Path (Kept for compatibility)
 LLAMA_MODEL_PATH = os.getenv("LLAMA_MODEL_PATH", "/path/to/local/llama-2")
 
